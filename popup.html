@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marky Highlighter</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">🖍️</div>
+      <h1>Marky</h1>
+    </header>
+
+    <main id="main-content">
+      
+      <!-- Stats Section -->
+      <section class="card">
+        <h2 class="card-header">Page Stats</h2>
+        <div class="stats-container" id="stats-container">
+          <div class="loading-spinner" id="loading-spinner"></div>
+          <!-- Stats will be populated here -->
+        </div>
+      </section>
+
+      <!-- Management Section -->
+      <section class="card">
+        <h2 class="card-header">Manage Highlights</h2>
+        <div class="action-buttons">
+          <button id="export-btn" class="btn">
+            <span class="icon">📥</span> Export All
+          </button>
+          <button id="import-btn" class="btn">
+            <span class="icon">📤</span> Import
+          </button>
+          <button id="clear-btn" class="btn btn-danger">
+            <span class="icon">🗑️</span> Clear Page
+          </button>
+        </div>
+      </section>
+
+      <!-- How-To Section -->
+      <section class="card">
+        <h2 class="card-header">How to Use</h2>
+        <div class="help-grid">
+          <div class="help-item">
+            <span class="icon">🖱️</span>
+            <div>
+              <strong>Right-Click</strong>
+              <p>Select text and right-click to choose a color.</p>
+            </div>
+          </div>
+          <div class="help-item">
+            <span class="icon">⌨️</span>
+            <div>
+              <strong>Shortcuts</strong>
+              <p>Use hotkeys like <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>Y</kbd>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+    
+    <input type="file" id="file-input" accept=".json" style="display: none;">
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html> 

@@ -1,0 +1,189 @@
+/* Styles for text highlights */
+.text-highlighter-highlight {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 3px;
+  padding: 2px 1px;
+  display: inline;
+  line-height: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/* Lighter, more subtle color-specific highlight styles */
+.text-highlighter-yellow {
+  background-color: rgba(255, 246, 143, 0.5); /* Lighter Yellow */
+}
+
+.text-highlighter-yellow:hover {
+  background-color: rgba(255, 246, 143, 0.7);
+  box-shadow: 0 0 4px rgba(255, 215, 0, 0.7);
+}
+
+.text-highlighter-green {
+  background-color: rgba(188, 238, 107, 0.5); /* Lighter Green */
+}
+
+.text-highlighter-green:hover {
+  background-color: rgba(188, 238, 107, 0.7);
+  box-shadow: 0 0 4px rgba(173, 216, 230, 0.7);
+}
+
+.text-highlighter-blue {
+  background-color: rgba(173, 216, 230, 0.5); /* Lighter Blue */
+}
+
+.text-highlighter-blue:hover {
+  background-color: rgba(173, 216, 230, 0.7);
+  box-shadow: 0 0 4px rgba(173, 216, 230, 0.7);
+}
+
+.text-highlighter-pink {
+  background-color: rgba(255, 182, 193, 0.5); /* Lighter Pink */
+}
+
+.text-highlighter-pink:hover {
+  background-color: rgba(255, 182, 193, 0.7);
+  box-shadow: 0 0 4px rgba(255, 182, 193, 0.7);
+}
+
+.text-highlighter-orange {
+  background-color: rgba(255, 204, 153, 0.5); /* Lighter Orange */
+}
+
+.text-highlighter-orange:hover {
+  background-color: rgba(255, 204, 153, 0.7);
+  box-shadow: 0 0 4px rgba(255, 204, 153, 0.7);
+}
+
+/* Floating toolbar styles */
+#text-highlighter-toolbar {
+  position: absolute;
+  z-index: 999999;
+  display: none;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  animation: fadeInScale 0.2s ease-out;
+}
+
+.highlighter-toolbar-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.highlighter-btn {
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.highlighter-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.highlighter-btn:active {
+  transform: scale(0.95);
+}
+
+.highlighter-close {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-left: 4px;
+}
+
+.highlighter-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.highlighter-close:active {
+  transform: scale(0.95);
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .text-highlighter-yellow {
+    background-color: rgba(255, 235, 59, 0.3);
+  }
+  
+  .text-highlighter-yellow:hover {
+    background-color: rgba(255, 235, 59, 0.5);
+  }
+
+  .text-highlighter-green {
+    background-color: rgba(76, 175, 80, 0.3);
+  }
+  
+  .text-highlighter-green:hover {
+    background-color: rgba(76, 175, 80, 0.5);
+  }
+
+  .text-highlighter-blue {
+    background-color: rgba(33, 150, 243, 0.3);
+  }
+  
+  .text-highlighter-blue:hover {
+    background-color: rgba(33, 150, 243, 0.5);
+  }
+
+  .text-highlighter-pink {
+    background-color: rgba(233, 30, 99, 0.3);
+  }
+  
+  .text-highlighter-pink:hover {
+    background-color: rgba(233, 30, 99, 0.5);
+  }
+
+  .text-highlighter-orange {
+    background-color: rgba(255, 152, 0, 0.3);
+  }
+  
+  .text-highlighter-orange:hover {
+    background-color: rgba(255, 152, 0, 0.5);
+  }
+
+  #text-highlighter-toolbar {
+    background: rgba(32, 33, 36, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+} 

@@ -1,0 +1,68 @@
+{
+  "manifest_version": 3,
+  "name": "Marky",
+  "version": "1.3.2",
+  "description": "Highlight text on any webpage with multiple colors. Your highlights are saved locally and are always private.",
+  
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus"
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Marky Text Highlighter"
+  },
+  
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  
+  "commands": {
+    "highlight-yellow": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Highlight selected text (Yellow - Default)"
+    },
+    "highlight-green": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      },
+      "description": "Highlight selected text (Green)"
+    },
+    "highlight-blue": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+U",
+        "mac": "Command+Shift+U"
+      },
+      "description": "Highlight selected text (Blue)"
+    },
+    "highlight-orange": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+O",
+        "mac": "Command+Shift+O"
+      },
+      "description": "Highlight selected text (Orange)"
+    }
+  }
+} 
