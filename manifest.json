@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Marky",
-  "version": "1.3.2",
+  "version": "1.3.9",
   "description": "Highlight text on any webpage with multiple colors. Your highlights are saved locally and are always private.",
   
   "permissions": [
@@ -41,7 +41,7 @@
         "default": "Ctrl+Shift+Y",
         "mac": "Command+Shift+Y"
       },
-      "description": "Highlight selected text (Yellow - Default)"
+      "description": "Highlight selected text (Yellow)"
     },
     "highlight-green": {
       "suggested_key": {
@@ -57,12 +57,12 @@
       },
       "description": "Highlight selected text (Blue)"
     },
-    "highlight-orange": {
+    "highlight-pink": {
       "suggested_key": {
-        "default": "Ctrl+Shift+O",
-        "mac": "Command+Shift+O"
+        "default": "Ctrl+Shift+P",
+        "mac": "Command+Shift+P"
       },
-      "description": "Highlight selected text (Orange)"
+      "description": "Highlight selected text (Pink)"
     }
   }
 } 

@@ -1,5 +1,5 @@
 // Service worker for Marky Text Highlighter
-console.log("Marky: Background script loaded (v1.3.0)");
+// console.log("Marky: Background script loaded (v1.4.0)");
 
 const HIGHLIGHT_COLORS = {
   yellow: { name: "🟡 Yellow", icon: "🟡" },
@@ -11,7 +11,7 @@ const HIGHLIGHT_COLORS = {
 
 // Create context menu when extension is installed
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("Marky: onInstalled event triggered.");
+  // console.log("Marky: onInstalled event triggered.");
   chrome.contextMenus.create({
     id: "highlight-parent",
     title: "Highlight with Marky",
@@ -30,7 +30,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Handle context menu clicks
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  console.log("Marky: Context menu clicked:", info.menuItemId);
+  // console.log("Marky: Context menu clicked:", info.menuItemId);
   const colorMatch = info.menuItemId.match(/highlight-(\w+)/);
   if (colorMatch && tab) {
     const color = colorMatch[1];
@@ -40,25 +40,32 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
 // Handle keyboard commands
 chrome.commands.onCommand.addListener((command, tab) => {
-  console.log("Marky: Keyboard command received:", command);
+  console.log("Marky: Keyboard command received:", command); // Re-enable for debugging
   const commandMap = {
     "highlight-yellow": "yellow",
     "highlight-green": "green",
     "highlight-blue": "blue",
-    "highlight-orange": "orange",
+    "highlight-pink": "pink",
   };
 
   const color = commandMap[command];
   if (color && tab) {
+    console.log(`Marky: Triggering ${color} highlight on tab ${tab.id}`);
     highlightSelection(tab.id, color);
+  } else {
+    console.log(
+      "Marky: Command not recognized or no active tab:",
+      command,
+      tab
+    );
   }
 });
 
 // Function to trigger highlighting in content script
 async function highlightSelection(tabId, color = "yellow") {
-  console.log(
-    `Marky: Attempting to highlight with color '${color}' on tab ${tabId}`
-  );
+  // console.log(
+  //   `Marky: Attempting to highlight with color '${color}' on tab ${tabId}`
+  // );
   try {
     await chrome.scripting.executeScript({
       target: { tabId },

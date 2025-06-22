@@ -1,12 +1,12 @@
-// Popup script for Marky Text Highlighter (v1.3.2)
+// Popup script for Marky Text Highlighter (v1.4.0)
 class PopupManager {
   constructor() {
     this.colors = {
-      yellow: { name: "Yellow", emoji: "🟡" },
-      green: { name: "Green", emoji: "🟢" },
-      blue: { name: "Blue", emoji: "🔵" },
-      pink: { name: "Pink", emoji: "🟣" },
-      orange: { name: "Orange", emoji: "🟠" },
+      yellow: { name: "Yellow", emoji: "🟡", hex: "#fff3a0" },
+      green: { name: "Green", emoji: "🟢", hex: "#a8e6a3" },
+      blue: { name: "Blue", emoji: "🔵", hex: "#87ceeb" },
+      pink: { name: "Pink", emoji: "🟣", hex: "#f8bbd9" },
+      orange: { name: "Orange", emoji: "🟠", hex: "#ffcc80" },
     };
     this.init();
   }
@@ -14,6 +14,7 @@ class PopupManager {
   async init() {
     this.setupEventListeners();
     await this.updateHighlightStats();
+    await this.updateNotesSection();
   }
 
   setupEventListeners() {
@@ -39,12 +40,40 @@ class PopupManager {
     return tab;
   }
 
-  getStorageKey(url) {
-    let path = new URL(url).pathname;
+  // Generate multiple storage keys for better persistence (same as content script)
+  getStorageKeys(url) {
+    const urlObj = new URL(url);
+    const origin = urlObj.origin;
+    let path = urlObj.pathname;
+
+    // Normalize path by removing trailing slash if it exists
     if (path.length > 1 && path.endsWith("/")) {
       path = path.slice(0, -1);
     }
-    return `highlights_${new URL(url).origin}${path}`;
+
+    // Generate multiple keys for different URL variations
+    const keys = [];
+
+    // 1. Full URL with search params
+    const fullUrl = `${origin}${path}${urlObj.search}`;
+    keys.push(`highlights_${btoa(fullUrl).replace(/[^a-zA-Z0-9]/g, "")}`);
+
+    // 2. URL without search params (most reliable)
+    const baseUrl = `${origin}${path}`;
+    keys.push(`highlights_${btoa(baseUrl).replace(/[^a-zA-Z0-9]/g, "")}`);
+
+    // 3. Simple hash-based key (fallback)
+    const simpleKey = `highlights_${origin.replace(
+      /[^a-zA-Z0-9]/g,
+      ""
+    )}_${path.replace(/[^a-zA-Z0-9]/g, "")}`;
+    keys.push(simpleKey);
+
+    return keys;
+  }
+
+  getStorageKey(url) {
+    return this.getStorageKeys(url)[0];
   }
 
   async updateHighlightStats() {
@@ -63,10 +92,29 @@ class PopupManager {
         return;
       }
 
-      const storageKey = this.getStorageKey(tab.url);
-      const result = await chrome.storage.local.get(storageKey);
-      const highlights = result[storageKey] || [];
-      this.renderStats(highlights);
+      const keys = this.getStorageKeys(tab.url);
+      let allHighlights = [];
+
+      // Try to load from all possible storage keys
+      for (const key of keys) {
+        try {
+          const result = await chrome.storage.local.get(key);
+          const highlights = result[key] || [];
+          if (highlights.length > 0) {
+            allHighlights = allHighlights.concat(highlights);
+          }
+        } catch (error) {
+          // Continue trying other keys
+        }
+      }
+
+      // Remove duplicates based on highlight ID
+      const uniqueHighlights = allHighlights.filter(
+        (highlight, index, arr) =>
+          arr.findIndex((h) => h.id === highlight.id) === index
+      );
+
+      this.renderStats(uniqueHighlights);
     } catch (error) {
       console.error("Marky: Failed to update highlight stats:", error);
       this.renderStats(null, "Error loading stats.");
@@ -114,6 +162,89 @@ class PopupManager {
     if (sortedColors.length > 0) {
       statsContainer.appendChild(colorGridEl);
     }
+  }
+
+  async updateNotesSection() {
+    const notesSection = document.getElementById("notes-section");
+    const notesContainer = document.getElementById("notes-container");
+
+    try {
+      const tab = await this.getCurrentTab();
+      if (!tab || !tab.url || tab.url.startsWith("chrome://")) {
+        notesSection.style.display = "none";
+        return;
+      }
+
+      const keys = this.getStorageKeys(tab.url);
+      let allHighlights = [];
+
+      // Try to load from all possible storage keys
+      for (const key of keys) {
+        try {
+          const result = await chrome.storage.local.get(key);
+          const highlights = result[key] || [];
+          if (highlights.length > 0) {
+            allHighlights = allHighlights.concat(highlights);
+          }
+        } catch (error) {
+          // Continue trying other keys
+        }
+      }
+
+      // Remove duplicates based on highlight ID
+      const uniqueHighlights = allHighlights.filter(
+        (highlight, index, arr) =>
+          arr.findIndex((h) => h.id === highlight.id) === index
+      );
+
+      const highlightsWithNotes = uniqueHighlights.filter(
+        (h) => h.note && h.note.trim()
+      );
+
+      if (highlightsWithNotes.length === 0) {
+        notesSection.style.display = "none";
+      } else {
+        notesSection.style.display = "block";
+        this.renderNotes(highlightsWithNotes);
+      }
+    } catch (error) {
+      console.error("Marky: Failed to update notes section:", error);
+      notesSection.style.display = "none";
+    }
+  }
+
+  renderNotes(highlights) {
+    const notesContainer = document.getElementById("notes-container");
+
+    if (highlights.length === 0) {
+      notesContainer.innerHTML =
+        '<p class="no-notes-message">No notes yet. Click on a highlight to add a note!</p>';
+      return;
+    }
+
+    const notesHtml = highlights
+      .map((highlight) => {
+        const colorInfo = this.colors[highlight.color] || { hex: "#fff3a0" };
+        const date = new Date(highlight.timestamp).toLocaleDateString();
+        const truncatedText =
+          highlight.text.length > 100
+            ? highlight.text.substring(0, 100) + "..."
+            : highlight.text;
+
+        return `
+        <div class="note-item">
+          <div class="note-highlight">
+            <span class="note-color" style="background-color: ${colorInfo.hex}"></span>
+            "${truncatedText}"
+          </div>
+          <div class="note-text">${highlight.note}</div>
+          <div class="note-date">${date}</div>
+        </div>
+      `;
+      })
+      .join("");
+
+    notesContainer.innerHTML = notesHtml;
   }
 
   async exportHighlights() {
@@ -192,6 +323,7 @@ class PopupManager {
       });
 
       await this.updateHighlightStats();
+      await this.updateNotesSection();
       this.showMessage(
         `✅ Imported ${data.highlights.length} highlights!`,
         "success"
@@ -236,6 +368,7 @@ class PopupManager {
       });
 
       await this.updateHighlightStats();
+      await this.updateNotesSection();
       this.showMessage("✅ All highlights cleared!", "success");
     } catch (error) {
       console.error("Failed to clear highlights:", error);
